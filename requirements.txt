@@ -1,0 +1,4 @@
+# Note that PyMuPDF can not be installed via pip. For installation instructions
+# see https://pythonhosted.org/PyMuPDF/installation.html
+
+wxPython>=4.0
