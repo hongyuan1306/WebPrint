@@ -1,13 +1,13 @@
-import ctypes
-from ctypes.wintypes import BYTE, DWORD, LPCWSTR
-
-import wx
 import fitz
+import wx
+import wx.lib.mixins.inspection
+
+from utils import enumeratePrinters
+from mainframe import MainFrame
 
 
 class PdfPrintout(wx.Printout):
-    """
-    Class encapsulating the functionality of printing out the document. The
+    """ Class encapsulating the functionality of printing out the document. The
     methods below over-ride those of the base class and supply document
     specific information to the printing framework that calls them internally.
     """
@@ -91,47 +91,13 @@ def printPdf(pdfFile):
     printout.Destroy()
 
 
-def enumeratePrinters():
-    # Use EnumPrintersW to list local printers with their names and
-    # descriptions.
-
-    winspool = ctypes.WinDLL('winspool.drv')  # for EnumPrintersW
-    msvcrt = ctypes.cdll.msvcrt  # for malloc, free
-
-    # Parameters: modify as you need. See MSDN for detail.
-    PRINTER_ENUM_LOCAL = 2
-    Name = None  # ignored for PRINTER_ENUM_LOCAL
-    Level = 1  # or 2, 4, 5
-
-    class PRINTER_INFO_1(ctypes.Structure):
-        _fields_ = [
-            ("Flags", DWORD),
-            ("pDescription", LPCWSTR),
-            ("pName", LPCWSTR),
-            ("pComment", LPCWSTR),
-        ]
-
-    # Invoke once with a NULL pointer to get buffer size.
-    info = ctypes.POINTER(BYTE)()
-    pcbNeeded = DWORD(0)
-    pcReturned = DWORD(0)  # the number of PRINTER_INFO_1 structures retrieved
-    winspool.EnumPrintersW(
-        PRINTER_ENUM_LOCAL, Name, Level,
-        ctypes.byref(info), 0,
-        ctypes.byref(pcbNeeded), ctypes.byref(pcReturned))
-
-    bufsize = pcbNeeded.value
-    buffer = msvcrt.malloc(bufsize)
-    winspool.EnumPrintersW(PRINTER_ENUM_LOCAL, Name, Level, buffer, bufsize,
-                           ctypes.byref(pcbNeeded), ctypes.byref(pcReturned))
-    info = ctypes.cast(buffer, ctypes.POINTER(PRINTER_INFO_1))
-    for i in range(pcReturned.value):
-        print(info[i].pName, '=>', info[i].pDescription)
-    msvcrt.free(buffer)
+class WebPrintApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
+    def OnInit(self):
+        frame = MainFrame()
+        frame.Show(True)
+        return True
 
 
 if __name__ == '__main__':
-    app = wx.App()
+    app = WebPrintApp()
     app.MainLoop()
-
-    enumeratePrinters()
