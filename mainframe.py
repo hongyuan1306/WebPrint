@@ -1,8 +1,27 @@
 import wx
 import wx.aui
+import wx.adv
 
 from utils import enumeratePrinters
 from printerpanel import PrinterPanel
+
+
+class AppTaskBarIcon(wx.adv.TaskBarIcon):
+    def __init__(self, frame):
+        wx.adv.TaskBarIcon.__init__(self)
+
+        icon = wx.Icon('./webprint.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(icon, 'WebPrint')
+        self.frame = frame
+
+        self.Bind(wx.adv.EVT_TASKBAR_LEFT_DCLICK, self.OnTaskBarActivate)
+
+    def OnTaskBarActivate(self, evt):
+        if self.frame.IsIconized():
+            self.frame.Iconize(False)
+        if not self.frame.IsShown():
+            self.frame.Show(True)
+        self.frame.Raise()
 
 
 class MainFrame(wx.Frame):
@@ -13,13 +32,23 @@ class MainFrame(wx.Frame):
 
         self.SetMenuBar(self.MakeMenuBar())
 
-        self.nb = wx.aui.AuiNotebook(self, style=wx.aui.AUI_NB_DEFAULT_STYLE |
-                                     wx.aui.AUI_NB_CLOSE_ON_ALL_TABS)
+        self.trayIcon = AppTaskBarIcon(self)
+
+        self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
+
+        bookStyle = wx.aui.AUI_NB_DEFAULT_STYLE
+        bookStyle &= ~(wx.aui.AUI_NB_CLOSE_ON_ACTIVE_TAB)
+        self.nb = wx.aui.AuiNotebook(self, style=bookStyle)
 
         for printer in enumeratePrinters():
             self.nb.AddPage(PrinterPanel(self.nb), printer['name'])
 
         self.Centre(wx.BOTH)
+
+    def OnCloseWindow(self, evt):
+        if self.trayIcon is not None:
+            self.trayIcon.Destroy()
+        self.Destroy()
 
     def MakeMenuBar(self):
         mb = wx.MenuBar()
