@@ -1,9 +1,5 @@
 import fitz
 import wx
-import wx.lib.mixins.inspection
-
-from utils import enumeratePrinters
-from mainframe import MainFrame
 
 
 class PdfPrintout(wx.Printout):
@@ -89,15 +85,3 @@ def printPdf(pdfFile):
         print('Printing failed')
 
     printout.Destroy()
-
-
-class WebPrintApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
-    def OnInit(self):
-        frame = MainFrame()
-        frame.Show(True)
-        return True
-
-
-if __name__ == '__main__':
-    app = WebPrintApp()
-    app.MainLoop()

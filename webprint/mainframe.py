@@ -2,8 +2,8 @@ import wx
 import wx.aui
 import wx.adv
 
-from utils import enumeratePrinters
-from printerpanel import PrinterPanel
+from .utils import enumeratePrinters
+from .printerpanel import PrinterPanel
 
 
 class AppTaskBarIcon(wx.adv.TaskBarIcon):

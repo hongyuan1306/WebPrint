@@ -2,3 +2,4 @@
 # see https://pythonhosted.org/PyMuPDF/installation.html
 
 wxPython>=4.0
+sqlalchemy

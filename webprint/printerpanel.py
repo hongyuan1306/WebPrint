@@ -1,6 +1,6 @@
 import wx
 
-from hm.wxx.grid.field import StringField
+from hm.wxx.grid.field import StringField, DateField
 from hm.wxx.grid.schema import Schema
 from hm.wxx.grid import DataGrid
 
@@ -12,11 +12,18 @@ class TaskGrid(DataGrid):
             Schema(
                 (
                     StringField(
-                        'ItemNumber',
-                        label='商品号',
-                        dataobj_field='itemId',
+                        'Title',
+                        label='文档标题',
+                        dataobj_field='title',
                         display_width=65,
                         editable=False
+                    ),
+                    DateField(
+                        'SubmitTime',
+                        label='提交时间',
+                        dataobj_field='submitTime',
+                        format='%.19s',
+                        display_width=130
                     )
                 ),
                 allow_row_move=False,
@@ -39,6 +46,7 @@ class PrinterPanel(wx.Panel):
 
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.AddMany([
+            (0, 0, 1),
             (self.btnPurge, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5),
             (self.btnPause, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5),
         ])
