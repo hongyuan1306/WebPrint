@@ -31,10 +31,10 @@ class MainFrame(wx.Frame):
             style=wx.DEFAULT_FRAME_STYLE)
 
         self.SetMenuBar(self.MakeMenuBar())
-
         self.trayIcon = AppTaskBarIcon(self)
 
-        self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
+        # hide to frame to implement minize to system tray
+        self.Bind(wx.EVT_CLOSE, self.OnWindowClose)
 
         bookStyle = wx.aui.AUI_NB_DEFAULT_STYLE
         bookStyle &= ~(wx.aui.AUI_NB_CLOSE_ON_ACTIVE_TAB)
@@ -45,35 +45,30 @@ class MainFrame(wx.Frame):
 
         self.Centre(wx.BOTH)
 
-    def OnCloseWindow(self, evt):
+    def OnExit(self, evt):
         if self.trayIcon is not None:
             self.trayIcon.Destroy()
         self.Destroy()
+
+    def OnWindowClose(self, evt):
+        self.Hide()
 
     def MakeMenuBar(self):
         mb = wx.MenuBar()
 
         menu1 = wx.Menu()
-        IDM_SALES_ORDER = menu1.Append(-1, '销售订单')
-        IDM_PURCHASE_ORDER = menu1.Append(-1, '采购订货')
 
-        item = wx.MenuItem(menu1, -1, '物流管理')
-        IDM_LOGISTICS = menu1.Append(item)
+        item = wx.MenuItem(menu1, -1, '退出')
+        IDM_EXIT = menu1.Append(item)
+        mb.Append(menu1, '主菜单')
 
-        menu1.AppendSeparator()
-        mb.Append(menu1, '主菜单(&M)')
-
-        self.Bind(wx.EVT_MENU, self.dummy, IDM_SALES_ORDER)
-        self.Bind(wx.EVT_MENU, self.dummy, IDM_PURCHASE_ORDER)
-        self.Bind(wx.EVT_MENU, self.dummy, IDM_LOGISTICS)
+        self.Bind(wx.EVT_MENU, self.OnExit, IDM_EXIT)
 
         menu2 = wx.Menu()
         IDM_CHG_PASS = menu2.Append(-1, '更改密码')
-        IDM_CANCEL_INVOICE = menu2.Append(-1, '发票作废')
-        mb.Append(menu2, '工具(&T)')
+        mb.Append(menu2, '工具')
 
         self.Bind(wx.EVT_MENU, self.dummy, IDM_CHG_PASS)
-        self.Bind(wx.EVT_MENU, self.dummy, IDM_CANCEL_INVOICE)
 
         return mb
 
