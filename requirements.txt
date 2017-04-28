@@ -3,3 +3,4 @@
 
 wxPython>=4.0
 sqlalchemy
+autobahn

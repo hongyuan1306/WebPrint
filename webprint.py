@@ -14,8 +14,7 @@ def setupDB():
 
 class WebPrintApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
     def OnInit(self):
-        frame = MainFrame()
-        frame.Show(True)
+        MainFrame().Show()
         return True
 
 

@@ -10,6 +10,7 @@ setup(
     install_requires=[
         'wxPython>=4.0',
         'sqlalchemy',
+        'autobahn',
         'hm.wxx'
     ]
 )
