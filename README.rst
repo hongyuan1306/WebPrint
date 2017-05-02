@@ -2,6 +2,15 @@
 WebPrint
 ========
 
+Current Status
+--------------
+
+The project is currently suspended as its usefulness has lower priority.
+
+Printing a PDF file using PyMuPDF to a given Windows printer is tested and
+technically working. Database and websocket server are **not** implemented. As
+a whole the code is not useable.
+
 
 Introduction
 ------------
